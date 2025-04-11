@@ -1,0 +1,33 @@
+
+—
+
+🪪 3. Add MIT License
+
+Go to your repo → Click "Add File" → Choose "Add License"  
+Pick MIT License (recommended for open source + dev teams)
+
+—
+
+🌍 4. Enable GitHub Pages
+
+Since it’s a static project (HTML, JS), this is easy:
+
+1. Go to https://github.com/y23asar/studyshare/settings/pages
+2. Under “Source”, choose:
+   - Branch: main
+   - Folder: / (root)
+3. Save and wait a minute
+
+Your app will be live at:
+https://y23asar.github.io/studyshare
+
+—
+
+🔥 You’re LIVE and officially deploy-ready!
+
+Want help next with:
+- Adding note search or markdown editing
+- Firebase Firestore sync (multi-device)
+- AI summary button (OpenAI integration)
+
+Pick what’s next — we’re leveling up 🚀
