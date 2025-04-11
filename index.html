@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Study Share - Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <header>
+    <h1>📚 Study Share</h1>
+    <button onclick="logout()" style="float:right;">Logout</button>
+  </header>
+
+  <main>
+    <input type="text" id="noteInput" placeholder="Write your note here..." />
+    <button onclick="saveNote()">Save Note</button>
+
+    <h3>Your Notes</h3>
+    <ul id="notes"></ul>
+  </main>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = "login.html";
+      } else {
+        loadUserNotes();
+      }
+    });
+
+    function saveNote() {
+      const content = document.getElementById("noteInput").value;
+      const user = auth.currentUser;
+      if (!user || !content.trim()) return;
+      db.collection("notes").add({
+        uid: user.uid,
+        content: content,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        document.getElementById("noteInput").value = "";
+        loadUserNotes();
+      });
+    }
+
+    function loadUserNotes() {
+      const user = auth.currentUser;
+      db.collection("notes")
+        .where("uid", "==", user.uid)
+        .orderBy("timestamp", "desc")
+        .get()
+        .then(snapshot => {
+          const notesContainer = document.getElementById("notes");
+          notesContainer.innerHTML = "";
+          snapshot.forEach(doc => {
+            const li = document.createElement("li");
+            li.textContent = doc.data().content;
+            notesContainer.appendChild(li);
+          });
+        });
+    }
+
+    function logout() {
+      auth.signOut().then(() => {
+        window.location.href = "login.html";
+      });
+    }
+  </script>
+</body>
+</html>
